@@ -226,11 +226,7 @@ function EditorCanvas({
 
     for (let i = 0; i < MASK_SIZE; i++) {
       const cls = maskDataRef.current[i];
-      if (
-        cls > 0 &&
-        cls <= 3 &&
-        classVisibility[cls as 1 | 2 | 3]
-      ) {
+      if (cls > 0 && cls <= 3 && classVisibility[cls as 1 | 2 | 3]) {
         const [r, g, b] = CLASS_COLORS[cls];
         d[i * 4] = r;
         d[i * 4 + 1] = g;
@@ -369,7 +365,14 @@ function EditorCanvas({
       setIsDrawing(true);
       renderOverlay();
     },
-    [activeTool, activeClass, brushSize, stageScale, screenToMask, renderOverlay],
+    [
+      activeTool,
+      activeClass,
+      brushSize,
+      stageScale,
+      screenToMask,
+      renderOverlay,
+    ],
   );
 
   const handleMouseMove = useCallback(
@@ -402,7 +405,15 @@ function EditorCanvas({
       lastPosRef.current = maskPos;
       renderOverlay();
     },
-    [isDrawing, activeTool, activeClass, brushSize, stageScale, screenToMask, renderOverlay],
+    [
+      isDrawing,
+      activeTool,
+      activeClass,
+      brushSize,
+      stageScale,
+      screenToMask,
+      renderOverlay,
+    ],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -536,7 +547,10 @@ function EditorCanvas({
   if (loading) {
     return (
       <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 text-center">
-        <Loader2 size={32} className="mx-auto text-blue-500 animate-spin mb-3" />
+        <Loader2
+          size={32}
+          className="mx-auto text-blue-500 animate-spin mb-3"
+        />
         <p className="text-gray-500">Loading annotation editor...</p>
       </div>
     );
@@ -748,10 +762,7 @@ function EditorCanvas({
         ref={containerRef}
         className="overflow-hidden rounded-lg border border-gray-300 bg-black"
         style={{
-          cursor:
-            activeTool === "pan"
-              ? "grab"
-              : "crosshair",
+          cursor: activeTool === "pan" ? "grab" : "crosshair",
         }}
       >
         <Stage
@@ -825,9 +836,7 @@ function ToolBtn({
       onClick={onClick}
       disabled={disabled}
       className={`p-1.5 rounded transition ${
-        active
-          ? "bg-blue-100 text-blue-700"
-          : "text-gray-600 hover:bg-gray-200"
+        active ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-200"
       } disabled:opacity-30 disabled:cursor-not-allowed`}
       title={title}
     >
