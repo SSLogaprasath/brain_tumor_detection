@@ -311,10 +311,15 @@ class BraTS3DDataset(Dataset):
             self._lazy = False
         else:
             # NIfTI — build subject list (lazy-loaded on access)
-            subjects = sorted([
+            # Only include directories that actually contain .nii.gz files inside them
+            # (e.g. skip "BraTS2020_ValidationData" which is often just a sub-folder container)
+            subjects = [
                 d for d in os.listdir(data_dir)
-                if os.path.isdir(os.path.join(data_dir, d)) and d.startswith("BraTS")
-            ])
+                if os.path.isdir(os.path.join(data_dir, d)) 
+                and d.startswith("BraTS")
+                and any(f.endswith('.nii.gz') for f in os.listdir(os.path.join(data_dir, d)))
+            ]
+            subjects = sorted(subjects)
             vol_ids = list(range(len(subjects)))
             all_volumes = {}
             self._lazy = True
