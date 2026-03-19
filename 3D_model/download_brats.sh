@@ -14,7 +14,8 @@
 
 set -e
 
-DATA_ROOT="/data/BraTS2020"
+# Change DATA_ROOT to a directory you have write access to in Lightning AI
+DATA_ROOT="$HOME/data/BraTS2020"
 
 echo "============================================"
 echo " BraTS 2020 NIfTI Dataset Downloader"
