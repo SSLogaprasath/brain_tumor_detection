@@ -163,8 +163,12 @@ def load_nifti_volume(subject_dir: str) -> Tuple[np.ndarray, np.ndarray]:
                 seg_path = os.path.join(subject_dir, f)
                 break
     
-    seg = nib.load(seg_path).get_fdata().astype(np.uint8)
-    seg[seg == 4] = 3  # ET: 4 → 3
+    if os.path.exists(seg_path):
+        seg = nib.load(seg_path).get_fdata().astype(np.uint8)
+        seg[seg == 4] = 3  # ET: 4 → 3
+    else:
+        # If no segmentation map exists, return zero array (useful for test/eval datasets without labels)
+        seg = np.zeros_like(image[0], dtype=np.uint8)
 
     return image, seg
 
