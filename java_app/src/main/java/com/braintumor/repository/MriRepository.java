@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MriRepository extends JpaRepository<MriMetaData, Integer> {
     List<MriMetaData> findByPatient_PatientId(Integer patientId);
+    List<MriMetaData> findByLab_LabId(Integer labId);
 }

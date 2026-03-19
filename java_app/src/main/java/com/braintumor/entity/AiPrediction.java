@@ -13,7 +13,7 @@ public class AiPrediction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer aiPredictionsId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mri_id", nullable = false)
     private MriMetaData mri;
 
@@ -22,6 +22,12 @@ public class AiPrediction {
 
     @Column(length = 255)
     private String heatMapPath;        // overlay visualization path
+
+    @Column(length = 255)
+    private String rawMaskFilePath;    // raw segmentation mask (pixel values 0-3)
+
+    @Column(length = 255)
+    private String flairImagePath;     // FLAIR channel grayscale PNG
 
     private Float wtDice;              // Whole Tumor Dice
     private Float tcDice;              // Tumor Core Dice
@@ -45,5 +51,5 @@ public class AiPrediction {
     @Column(updatable = false)
     private LocalDateTime predictedAt = LocalDateTime.now();
 
-    public enum Status { processing, done, failed }
+    public enum Status { processing, done, failed, reviewed }
 }

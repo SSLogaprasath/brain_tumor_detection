@@ -7,4 +7,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<RadiologistReview, Integer> {
     List<RadiologistReview> findByRadiologist_RadiologistId(Integer radiologistId);
     List<RadiologistReview> findByStatus(RadiologistReview.ReviewStatus status);
+    java.util.Optional<RadiologistReview> findByAiPrediction_AiPredictionsId(Integer aiPredictionsId);
+    List<RadiologistReview> findByReReviewRequestedTrue();
 }

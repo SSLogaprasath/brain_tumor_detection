@@ -275,7 +275,7 @@ def visualize_prediction(
     if save_path:
         os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-        print(f"Saved → {save_path}")
+        print(f"Saved -> {save_path}")
     if show:
         plt.show()
     plt.close(fig)
@@ -342,6 +342,22 @@ def main(args):
         report["file"] = filename
         all_reports.append(report)
 
+        # Save raw mask as single-channel PNG (pixel values 0-3)
+        os.makedirs(args.output_dir, exist_ok=True)
+        raw_mask_path = os.path.join(
+            args.output_dir, filename.replace(".h5", "_raw_mask.png")
+        )
+        cv2.imwrite(raw_mask_path, pred_mask)
+        report["raw_mask_path"] = os.path.abspath(raw_mask_path)
+
+        # Save FLAIR channel as grayscale PNG for annotation editor
+        flair_save_path = os.path.join(
+            args.output_dir, filename.replace(".h5", "_flair.png")
+        )
+        flair_norm = _normalize_for_display(image[3])
+        cv2.imwrite(flair_save_path, flair_norm)
+        report["flair_path"] = os.path.abspath(flair_save_path)
+
         if report["whole_tumor_present"]:
             save_path = os.path.join(
                 args.output_dir, filename.replace(".h5", ".png")
@@ -398,6 +414,20 @@ def main(args):
         print(f"ESTIMATED_REGION={region}")
         print(f"MASK_PATH={mask_path}")
         print(f"HEATMAP_PATH={heatmap_path}")
+
+        # Raw mask and FLAIR paths (for annotation editor)
+        raw_mask_out = ""
+        flair_out = ""
+        for r in all_reports:
+            if r.get("raw_mask_path"):
+                raw_mask_out = r["raw_mask_path"]
+                break
+        for r in all_reports:
+            if r.get("flair_path"):
+                flair_out = r["flair_path"]
+                break
+        print(f"RAW_MASK_PATH={raw_mask_out}")
+        print(f"FLAIR_PATH={flair_out}")
 
     return all_reports
 

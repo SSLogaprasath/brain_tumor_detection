@@ -1,6 +1,7 @@
 package com.braintumor.controller;
 
 import com.braintumor.entity.MriMetaData;
+import com.braintumor.repository.MriRepository;
 import com.braintumor.service.MriService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,7 @@ import java.util.List;
 public class MriController {
 
     private final MriService mriService;
+    private final MriRepository mriRepository;
 
     /**
      * POST /api/mri/upload
@@ -56,5 +58,15 @@ public class MriController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MriMetaData> getById(@PathVariable Integer mriId) {
         return ResponseEntity.ok(mriService.getById(mriId));
+    }
+
+    /**
+     * GET /api/mri/lab/{labId}
+     * List all MRI scans for a lab.
+     */
+    @GetMapping("/lab/{labId}")
+    @PreAuthorize("hasAnyRole('lab_staff','admin')")
+    public ResponseEntity<List<MriMetaData>> getByLab(@PathVariable Integer labId) {
+        return ResponseEntity.ok(mriRepository.findByLab_LabId(labId));
     }
 }

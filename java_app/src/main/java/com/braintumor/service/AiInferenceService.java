@@ -124,6 +124,10 @@ public class AiInferenceService {
             prediction.setMaskFilePath(line.substring("MASK_PATH=".length()).trim());
         } else if (line.startsWith("HEATMAP_PATH=")) {
             prediction.setHeatMapPath(line.substring("HEATMAP_PATH=".length()).trim());
+        } else if (line.startsWith("RAW_MASK_PATH=")) {
+            prediction.setRawMaskFilePath(line.substring("RAW_MASK_PATH=".length()).trim());
+        } else if (line.startsWith("FLAIR_PATH=")) {
+            prediction.setFlairImagePath(line.substring("FLAIR_PATH=".length()).trim());
         }
     }
 }

@@ -14,11 +14,11 @@ public class MriMetaData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer mriId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lab_id", nullable = false)
     private Lab lab;
 

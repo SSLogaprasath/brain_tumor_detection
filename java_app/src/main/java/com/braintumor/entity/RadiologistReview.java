@@ -13,11 +13,11 @@ public class RadiologistReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reviewId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ai_predictions_id", nullable = false)
     private AiPrediction aiPrediction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "radiologist_id", nullable = false)
     private Radiologist radiologist;
 
@@ -38,6 +38,14 @@ public class RadiologistReview {
 
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private Boolean reReviewRequested = false;
+
+    private Long reReviewRequestedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String reReviewNotes;
 
     public enum ReviewStatus { pending, approved, rejected }
 }

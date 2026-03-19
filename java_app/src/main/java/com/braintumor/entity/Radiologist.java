@@ -16,11 +16,11 @@ public class Radiologist {
     @Column(nullable = false, length = 100)
     private String radiologistName;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lab_id", nullable = false)
     private Lab lab;
 
