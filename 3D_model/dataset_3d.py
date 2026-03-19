@@ -135,6 +135,15 @@ def load_nifti_volume(subject_dir: str) -> Tuple[np.ndarray, np.ndarray]:
     channels = []
     for mod in modalities:
         path = os.path.join(subject_dir, f"{subject_name}_{mod}.nii.gz")
+        if not os.path.exists(path):
+            path = os.path.join(subject_dir, f"{subject_name}_{mod}.nii")
+        if not os.path.exists(path):
+            # Fallback for alternative naming
+            for f in os.listdir(subject_dir):
+                if f.endswith(f"_{mod}.nii") or f.endswith(f"_{mod}.nii.gz") or f.endswith(f"_{mod.upper()}.nii.gz") or f.endswith(f"_{mod.upper()}.nii"):
+                    path = os.path.join(subject_dir, f)
+                    break
+
         vol = nib.load(path).get_fdata().astype(np.float32)
         channels.append(vol)
     image = np.stack(channels, axis=0)  # (4, D, H, W)
@@ -146,6 +155,14 @@ def load_nifti_volume(subject_dir: str) -> Tuple[np.ndarray, np.ndarray]:
             image[c][mask] = (image[c][mask] - image[c][mask].mean()) / (image[c][mask].std() + 1e-8)
 
     seg_path = os.path.join(subject_dir, f"{subject_name}_seg.nii.gz")
+    if not os.path.exists(seg_path):
+        seg_path = os.path.join(subject_dir, f"{subject_name}_seg.nii")
+    if not os.path.exists(seg_path):
+        for f in os.listdir(subject_dir):
+            if f.endswith(f"_seg.nii") or f.endswith(f"_seg.nii.gz"):
+                seg_path = os.path.join(subject_dir, f)
+                break
+    
     seg = nib.load(seg_path).get_fdata().astype(np.uint8)
     seg[seg == 4] = 3  # ET: 4 → 3
 
@@ -311,13 +328,11 @@ class BraTS3DDataset(Dataset):
             self._lazy = False
         else:
             # NIfTI — build subject list (lazy-loaded on access)
-            # Only include directories that actually contain .nii.gz files inside them
-            # (e.g. skip "BraTS2020_ValidationData" which is often just a sub-folder container)
+            # Only include directories that actually contain .nii or .nii.gz files inside them
             subjects = [
                 d for d in os.listdir(data_dir)
                 if os.path.isdir(os.path.join(data_dir, d)) 
-                and d.startswith("BraTS")
-                and any(f.endswith('.nii.gz') for f in os.listdir(os.path.join(data_dir, d)))
+                and any(f.endswith('.nii.gz') or f.endswith('.nii') for f in os.listdir(os.path.join(data_dir, d)))
             ]
             subjects = sorted(subjects)
             vol_ids = list(range(len(subjects)))
